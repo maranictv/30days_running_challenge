@@ -285,6 +285,7 @@ body{
   display:block;
   color: var(--black);
   background: var(--white);
+  cursor:pointer;
 }
 .video-thumb{
   position:relative;
@@ -292,6 +293,9 @@ body{
   aspect-ratio: 16/9;
   background: var(--black);
   overflow:hidden;
+}
+.video-thumb iframe{
+  width:100%; height:100%; display:block; border:none;
 }
 .video-thumb img{
   width:100%; height:100%; object-fit:cover; display:block;
@@ -414,8 +418,8 @@ footer{
 
   <div class="ref-section">
     <h2>참고 영상</h2>
-    <a class="video-card" href="https://www.youtube.com/watch?v=rOoYrqdCVc0&t=389s" target="_blank" rel="noopener">
-      <div class="video-thumb">
+    <div class="video-card" data-video-id="rOoYrqdCVc0" data-start="389">
+      <div class="video-thumb" id="thumb-rOoYrqdCVc0">
         <img src="https://img.youtube.com/vi/rOoYrqdCVc0/maxresdefault.jpg" alt="30일 러닝 프로그램 영상" loading="lazy"
              onerror="this.src='https://img.youtube.com/vi/rOoYrqdCVc0/hqdefault.jpg'">
         <div class="video-play">▶</div>
@@ -426,9 +430,9 @@ footer{
         <div class="video-title">왕초보러너에게 필요한 30일 러닝 프로그램</div>
         <div class="video-channel">마라닉TV</div>
       </div>
-    </a>
-    <a class="video-card" href="https://www.youtube.com/watch?v=4P-fUsQ3T-c&t=95s" target="_blank" rel="noopener">
-      <div class="video-thumb">
+    </div>
+    <div class="video-card" data-video-id="4P-fUsQ3T-c" data-start="95">
+      <div class="video-thumb" id="thumb-4P-fUsQ3T-c">
         <img src="https://img.youtube.com/vi/4P-fUsQ3T-c/maxresdefault.jpg" alt="달리기 스트레칭 영상" loading="lazy"
              onerror="this.src='https://img.youtube.com/vi/4P-fUsQ3T-c/hqdefault.jpg'">
         <div class="video-play">▶</div>
@@ -439,7 +443,7 @@ footer{
         <div class="video-title">달리기 최고의 스트레칭, 딱 9분이면 끝</div>
         <div class="video-channel">마라닉TV</div>
       </div>
-    </a>
+    </div>
   </div>
 
   <div class="reset-wrap">
@@ -647,6 +651,22 @@ document.getElementById('modalConfirm').addEventListener('click', () => {
   modalBg.classList.remove('show');
 });
 modalBg.addEventListener('click', (e) => { if(e.target === modalBg) modalBg.classList.remove('show'); });
+
+// ---- inline video playback on thumbnail click ----
+document.querySelectorAll('.video-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const videoId = card.dataset.videoId;
+    const start = card.dataset.start || 0;
+    const thumb = document.getElementById(`thumb-${videoId}`);
+    if(!thumb || thumb.querySelector('iframe')) return; // 이미 재생 중이면 무시
+    thumb.innerHTML = `<iframe
+        src="https://www.youtube.com/embed/${videoId}?start=${start}&autoplay=1&rel=0"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>`;
+  });
+});
 
 render();
 </script>
